@@ -81,3 +81,41 @@ I forgot funnels multiply: product share (~4%) x narrative consent (~35%)
 ### Next (Day 7 part 2 — due Oct 16)
 TF-IDF + logistic regression from zero, train/test split, per-class P/R/F1,
 class imbalance handling with before/after evidence, README.
+
+## Day 7 part 2 (Oct 16) — train, evaluate, and the accuracy trap settled
+
+### What I built
+- `play_tfidf.py` — saw TF-IDF scores with my own eyes: "stole" 0.46 vs
+  "card" 0.27. Twist: in a 3-sentence corpus even "from" looks rare —
+  TF-IDF's power comes from corpus size.
+- `src/train.py` — 80/20 stratified split (hide the exam), TF-IDF
+  (vocab: 13,727 — my guess was 3-5k; real text is messier), logistic
+  regression (per-word weighted voting, one scoreboard per class).
+- `src/evaluate.py` — per-class P/R/F1 + confusion matrix on the held-out
+  1,000.
+- `README.md` — labeling rules, before/after table, trade-off reasoning.
+
+### The before/after (the whole point of the ticket)
+BEFORE (no imbalance handling): accuracy 0.77, high recall 0.19 —
+16 of 83 fraud complaints caught, 67 sitting behind billing questions.
+A good report card on a dangerous model. The 91% trap, live.
+AFTER (class_weight="balanced" — bigger fine for each rare-class mistake;
+deep learning twin: weighted cross-entropy): accuracy 0.75, high recall
+0.64 — 53 of 83 caught. Accuracy went DOWN, model got BETTER.
+
+### The trade and why it's right
+Price paid: high precision 0.53 -> 0.40 (more false alarms), medium recall
+0.85 -> 0.73 (59 mediums now flagged high — I predicted medium would pay).
+A missed fraud costs money, trust, and regulatory pain; a false alarm costs
+a reviewer a few minutes. In this business, recall on high wins.
+Still honest: 30 of 83 missed. Baseline, not a victory lap.
+
+### Remember
+- Accuracy is a report card that can hide a dangerous model; per-class
+  recall on the minority class is where the truth lives.
+- Class weights = bigger fines for rare-class mistakes. Same idea as
+  weighted cross-entropy in deep learning.
+- Train/test split = hide the exam; stratify = same class mix in the exam.
+- touch creates an EMPTY file; creating a file is not filling it. wc first.
+- My predictions are getting better: accuracy "below 75" (actual 75-77),
+  high recall "30%" (actual 19%), "medium will pay the price" (it did).
