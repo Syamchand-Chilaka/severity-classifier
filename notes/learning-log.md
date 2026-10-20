@@ -119,3 +119,29 @@ Still honest: 30 of 83 missed. Baseline, not a victory lap.
 - touch creates an EMPTY file; creating a file is not filling it. wc first.
 - My predictions are getting better: accuracy "below 75" (actual 75-77),
   high recall "30%" (actual 19%), "medium will pay the price" (it did).
+
+  ## Day 10 (Oct 19) — drift measured, caching understood
+
+- Built play_drift.py: out-of-time eval of the severity model on April
+  2026 (unseen month). High recall 0.64 -> 0.60, accuracy 0.75 -> 0.74,
+  class mix stable, 0 unmapped categories. Mild drift, no cliff — and I
+  now own a reusable monthly monitoring ritual (SR 11-7's ongoing
+  monitoring, in miniature).
+- Predictions: count 2000+ (actual 3,605 — publication-lag mechanism
+  confirmed), high% same (7.8 vs 8.3), high recall 0.50 (actual 0.60 —
+  right direction, over-predicted the damage).
+- Debugged on the way: editor format-on-save reorders imports (fix:
+  PYTHONPATH=src instead of sys.path tricks — formatter-proof);
+  KeyError 'product' = case again (rule 45); caught vec.tranform typo
+  by READING before running — cheapest debugging there is.
+- Caching: prefix (same beginning -> reuse computation; stable content
+  first in prompts; zero risk) vs semantic (same meaning -> reuse whole
+  answer; big savings; dangerous for precise numbers — 2024 vs 2025
+  embed near-identical). Full notes: notes/drift-and-caching.md
+
+### Remember
+- Drift: the world moves, the model doesn't. Monitor monthly; expect
+  slow rot, fear upstream cliffs.
+- Prompt design serves the cache: stable first, variable last.
+- Semantic cache is the scope trap's cousin: topic-match is not
+  precision-match.
